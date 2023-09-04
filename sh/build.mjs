@@ -24,6 +24,8 @@ if (viteErr) {
   quit(viteErr);
 }
 
+console.log(viteOut);
+
 let indexFileName = viteOut.match(/dist\/assets\/index-[^.]+.js/)?.[0]
 
 console.log(indexFileName)
