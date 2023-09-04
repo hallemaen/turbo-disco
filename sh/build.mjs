@@ -18,21 +18,28 @@ const toHex = (uint8Array) => {
   return result;
 };
 
-let [viteOut, viteErr] = await sh("vite build");
+let [, viteErr] = await sh("vite build");
 
 if (viteErr) {
   quit(viteErr);
 }
 
-console.log(viteOut);
+let [lsOut, lsErr] = await sh("ls dist/assets");
 
-let indexFileName = viteOut.match(/dist\/assets\/index-[^.]+.js/)?.[0]
+if (lsErr) {
+  quit(lsErr);
+}
+
+console.log(lsOut);
+
+let indexFileName = lsOut.match(/index-[^.]+.js/)?.[0]
 
 console.log(indexFileName)
 
-const data = fs.readFileSync(indexFileName);
+const data = fs.readFileSync(`dist/assets/${indexFileName}`);
 
 const checksum = toHex(await sha256(data));
 
+console.log(checksum);
 
-sh(`cp ${indexFileName} dist/assets/index-${checksum}.js`)
+sh(`cp dist/assets/${indexFileName} dist/assets/index-${checksum}.js`)
